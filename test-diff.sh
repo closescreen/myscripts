@@ -30,8 +30,8 @@ if [[ -z "$@" ]]; then # если нет параметров
   
   # спрашиваем куда класть результаты:
   def4="$HOME/regru/my_test_results"
-  echo "Where to write test results: [$def4]"; read results_folder;
-  [[ -z "$results_folder" ]] && results_folder=$def4
+  echo -e "\nWhere to write test results: [$def4]"; read results_folder;
+  [[ -z "$results_folder" ]] && results_folder="$def4"
 
 else
   # из параметров: br1 br2 подстрока
@@ -54,13 +54,16 @@ for br in "$br1" "$br2"; do
   done;
 done
 
+echo "\n\n*************************** Comparing test results ****************************"
 # сравнение результатов:
+
 for t in $tt; do
-  $t_result1="$results_folder/$br1/`basename $t`.result"
-  $t_result2="$results_folder/$br2/`basename $t`.result"
-  echo -n "Compare $t_result1 <-> $t_result2 ...">&2
-  ( diff -d "$t_result1" "$t_result2" && echo "ok">&2 ) || echo " !!!!!!!!!!!!! DIFFERENCE !!!!!!!!!!! ( $t_result1 <-> $t_result2 )">&2
+  t_result1="$results_folder/$br1/`basename $t`.result"
+  t_result2="$results_folder/$br2/`basename $t`.result"
+  echo -n "Compare $t ($br1 <-> $br2) ...">&2
+  ( diff -d "$t_result1" "$t_result2" && echo "ok">&2 ) || echo " !!!!!!!!!!!!! DIFFERENCE !!!!!!!!!!! ( $t_result1 <-> $t_result2 )" >&2
 done
 
+echo "************************ end of compare ************************"
 echo "Done. Look test results in $results_folder"
 
